@@ -1,7 +1,9 @@
 # libs
+import requests
 
-# Use the following URL:
-# https://api.github.com/users/<username>/events
+# Use the following URLs:
+# https://api.github.com/users/<username>/events - events for user
+# https://api.github.com/users/{username} - checks for user info
 # https://docs.github.com/en/rest/using-the-rest-api/github-event-types?apiVersion=2022-11-28#event-object-common-properties
 # Example: https://api.github.com/users/kamranahmedse/events
 
@@ -59,10 +61,23 @@
 
 # TODOs:
 # Handle API error codes
+
 # Handle multiple even types
+
 # Validate user
+def validateGitUser(username: str) -> bool:
+    url = f"https://api.github.com/users/{username}"
+    request = requests.get(url.format(username))
+
+    if request.status_code == 200:
+      userInfo = request.json()
+      print(userInfo)
+      return True
+    elif request.status_code == 404:
+        raise Exception(f"User {username} does not exist.")
+    else:
+       return False
 
 # functions
 
 #main
-
