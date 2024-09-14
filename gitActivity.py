@@ -1,5 +1,8 @@
 # libs
 import requests
+import sys
+
+import constants
 
 # Use the following URLs:
 # https://api.github.com/users/<username>/events - events for user
@@ -62,22 +65,52 @@ import requests
 # TODOs:
 # Handle API error codes
 
-# Handle multiple even types
+# Handle multiple event types
+def fetchData(username):
+   # https://api.github.com/users/<username>/events
+   # happens after validation
+   eventsUrl = f"https://api.github.com/users/{username}/events"
+   request = requests.get(eventsUrl.format(username))
+
+   if request.status_code == constants.STATUS_SUCCESS:
+    pass
+   
 
 # Validate user
 def validateGitUser(username: str) -> bool:
     url = f"https://api.github.com/users/{username}"
     request = requests.get(url.format(username))
 
-    if request.status_code == 200:
+    if request.status_code == constants.STATUS_SUCCESS:
       userInfo = request.json()
       print(userInfo)
       return True
-    elif request.status_code == 404:
+    elif request.status_code == constants.STATUS_NOT_FOUND:
         raise Exception(f"User {username} does not exist.")
     else:
        return False
 
 # functions
+def main(username):
+   validateGitUser(username)
 
 #main
+if __name__ == '__main__':
+  try:
+    args = sys.argv[1:]
+  except:
+    raise ValueError("Missing arguments. Exiting...")
+  
+  if len(args) > 1 and args[0] != "-h":
+      # invalid args
+      raise ValueError("Invalid arguments. Exiting...")
+  elif args[0] == "-h" and len(args) == 1:
+      # help info
+      print ('gitActivity.py <username>')
+      sys.exit()
+  elif len(args) == 1:
+      main(sys.argv[1])
+  else:
+      # TODO: maybe implement activity for multiple users?
+      # invalid args
+      raise ValueError("Invalid arguments. Exiting...")
