@@ -65,6 +65,12 @@ import constants
 # TODOs:
 # Handle API error codes
 
+# Helper functions
+def printHelperInfo():
+  # help info
+  print ('Example usage:\ngitActivity.py <username> - display <username> latest activity\ngitActivity.py h - help info')
+  # sys.exit()
+
 # Handle multiple event types
 def fetchData(username):
    # https://api.github.com/users/<username>/events
@@ -73,7 +79,13 @@ def fetchData(username):
    request = requests.get(eventsUrl.format(username))
 
    if request.status_code == constants.STATUS_SUCCESS:
-    pass
+    eventsInfo = request.json()
+    # print(eventsInfo)
+    for event in eventsInfo:
+       if event[constants.TYPE] == constants.WATCH_EVENT:
+          repoInfo = event[constants.REPO]
+          print(f"- Starred {repoInfo['url']}")
+
    
 
 # Validate user
@@ -86,31 +98,35 @@ def validateGitUser(username: str) -> bool:
       print(userInfo)
       return True
     elif request.status_code == constants.STATUS_NOT_FOUND:
-        raise Exception(f"User {username} does not exist.")
+        print(f"User {username} does not exist.")
+        sys.exit()
     else:
        return False
 
 # functions
 def main(username):
-   validateGitUser(username)
+  if validateGitUser(username):
+      fetchData(username)
+  else:
+     raise Exception(f"Validation of user {username} failed. Exiting...")
+
 
 #main
 if __name__ == '__main__':
   try:
-    args = sys.argv[1:]
-  except:
-    raise ValueError("Missing arguments. Exiting...")
+    args = sys.argv[1]
+  except IndexError:
+     print("Missing arguments.\nExample usage: gitActivity.py <username>")
+     sys.exit(1)
   
-  if len(args) > 1 and args[0] != "-h":
-      # invalid args
-      raise ValueError("Invalid arguments. Exiting...")
-  elif args[0] == "-h" and len(args) == 1:
+  if sys.argv[1] == "h" and len(sys.argv) == 2:
       # help info
-      print ('gitActivity.py <username>')
+      printHelperInfo()
       sys.exit()
-  elif len(args) == 1:
+  elif len(sys.argv) == 2:
       main(sys.argv[1])
   else:
       # TODO: maybe implement activity for multiple users?
       # invalid args
+      printHelperInfo()
       raise ValueError("Invalid arguments. Exiting...")
