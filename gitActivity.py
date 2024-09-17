@@ -73,20 +73,27 @@ def printHelperInfo():
 
 # Handle multiple event types
 def fetchData(username):
-   # https://api.github.com/users/<username>/events
-   # happens after validation
-   eventsUrl = f"https://api.github.com/users/{username}/events"
-   request = requests.get(eventsUrl.format(username))
+  # https://api.github.com/users/<username>/events
+  # happens after validation
+  eventsUrl = f"https://api.github.com/users/{username}/events"
+  request = requests.get(eventsUrl.format(username))
 
-   if request.status_code == constants.STATUS_SUCCESS:
+  print(f"{username}'s latest activity:")
+  if request.status_code == constants.STATUS_SUCCESS:
     eventsInfo = request.json()
     # print(eventsInfo)
     for event in eventsInfo:
-       if event[constants.TYPE] == constants.WATCH_EVENT:
-          repoInfo = event[constants.REPO]
-          print(f"- Starred {repoInfo['url']}")
+        # print(event)
+        repoInfo = event[constants.REPO]
+        match event[constants.TYPE]:
+          case constants.WATCH_EVENT:
+            print(f"- Starred {repoInfo[constants.URL]}")
+          case constants.PUSH_EVENT:
+              commitsInfo = event[constants.PAYLOAD][constants.COMMITS]
+              numCommits = len(commitsInfo)
+              commitStr = "commit" if numCommits == 1 else "commits"
+              print(f"- Pushed {numCommits} {commitStr} to {repoInfo[constants.URL]}")
 
-   
 
 # Validate user
 def validateGitUser(username: str) -> bool:

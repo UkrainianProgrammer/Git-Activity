@@ -7,6 +7,7 @@ URL = "url"
 TYPE = "type"
 REPO = "repo"
 PAYLOAD = "payload"
+COMMITS = "commits"
 ACTION = "action"
 
 
