@@ -93,6 +93,13 @@ def fetchData(username):
               numCommits = len(commitsInfo)
               commitStr = "commit" if numCommits == 1 else "commits"
               print(f"- Pushed {numCommits} {commitStr} to {repoInfo[constants.URL]}")
+          case constants.MEMBER_EVENT:
+              action = event[constants.PAYLOAD][constants.ACTION]
+              member = event[constants.PAYLOAD][constants.MEMBER][constants.LOGIN_ID]
+              repo = repoInfo[constants.URL]
+              print(f"- {action.capitalize()} {member} @ {repo}")
+
+              
 
 
 # Validate user

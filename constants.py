@@ -9,11 +9,15 @@ REPO = "repo"
 PAYLOAD = "payload"
 COMMITS = "commits"
 ACTION = "action"
+MEMBER = "member"
+LOGIN_ID = "login"
 
 
 # events keys
 WATCH_EVENT = "WatchEvent"
 PUSH_EVENT = "PushEvent"
+MEMBER_EVENT = "MemberEvent"
+PULLREQUEST_EVENT = "PullRequestEvent"
 
 # user keys
 USER_MESSAGE = "message"
