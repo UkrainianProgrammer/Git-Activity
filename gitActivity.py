@@ -69,16 +69,13 @@ import constants
 def printHelperInfo():
   # help info
   print ('Example usage:\ngitActivity.py <username> - display <username> latest activity\ngitActivity.py h - help info')
-  # sys.exit()
 
 # Handle multiple event types
 def fetchData(username):
   # https://api.github.com/users/<username>/events
-  # happens after validation
   eventsUrl = f"https://api.github.com/users/{username}/events"
   request = requests.get(eventsUrl.format(username))
 
-  print(f"{username}'s latest activity:")
   if request.status_code == constants.STATUS_SUCCESS:
     eventsInfo = request.json()
     # print(eventsInfo)
@@ -98,8 +95,6 @@ def fetchData(username):
               member = event[constants.PAYLOAD][constants.MEMBER][constants.LOGIN_ID]
               repo = repoInfo[constants.URL]
               print(f"- {action.capitalize()} {member} @ {repo}")
-
-              
 
 
 # Validate user
